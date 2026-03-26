@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Job Tracker Agent",
+  "version": "1.2",
+  "description": "Auto-detect H1B sponsorship on job boards",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.indeed.com/*",
+        "*://*.linkedin.com/*",
+        "*://*.greenhouse.io/*",
+        "*://*.lever.co/*",
+        "*://*.ashbyhq.com/*",
+        "*://*.myworkdayjobs.com/*",
+        "*://*.workday.com/*",
+        "*://*.smartrecruiters.com/*",
+        "*://*.jobvite.com/*",
+        "*://*.icims.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

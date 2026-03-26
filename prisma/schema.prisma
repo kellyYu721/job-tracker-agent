@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Application {
+  id               String            @id @default(cuid())
+  company          String
+  role             String
+  status           ApplicationStatus @default(APPLIED)
+  link             String?
+  notes            String?
+  location         String?
+  salaryRange      String?
+  requirements     String[]
+  niceToHaves      String[]
+  rawDescription   String?
+  fitScore         Int?
+  skillGaps        String[]
+  skillMatches     String[]
+  sponsorsH1B      String?
+  sponsorshipNotes String?
+  appliedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  lastActivityAt   DateTime          @default(now())
+
+  // Add timeline relation
+  timeline ApplicationEvent[]
+}
+
+model ApplicationEvent {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type          String // "note", "status_change", "interview", "email_sent", "follow_up", "phone_screen"
+  title         String
+  description   String?
+  date          DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  GHOSTED
+  WITHDRAWN
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  name       String   @default("default")
+  skills     String[]
+  experience String?
+  education  String?
+  rawText    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

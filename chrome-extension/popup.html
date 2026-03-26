@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .status.loading { background: #f3f4f6; }
+    .status.success { background: #d1fae5; }
+    .status.error { background: #fee2e2; }
+    .job-details {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .job-details h2 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+    }
+    .job-details p {
+      margin: 4px 0;
+      color: #666;
+      font-size: 13px;
+    }
+    .job-details .requirements {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #888;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button.primary {
+      background: #3b82f6;
+      color: white;
+    }
+    button.primary:hover {
+      background: #2563eb;
+    }
+    button.primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    button.secondary:hover {
+      background: #e5e7eb;
+    }
+    .settings {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .settings input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    .settings label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Job Tracker</h1>
+  
+  <div id="content">
+    <div class="status loading">Click "Parse This Page" to extract job details.</div>
+    <button class="primary" id="parseBtn">Parse This Page</button>
+  </div>
+
+  <div class="settings">
+    <label>API URL (your Next.js app)</label>
+    <input type="text" id="apiUrl" placeholder="http://localhost:3000" />
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { width: 300px; padding: 16px; font-family: system-ui; }
+    h3 { margin: 0 0 12px 0; }
+    textarea { width: 100%; height: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; resize: none; }
+    button { width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 8px; font-weight: 600; }
+    button:hover { background: #2563eb; }
+    .status { margin-top: 8px; font-size: 13px; color: #666; }
+  </style>
+</head>
+<body>
+  <h3>💼 Job Tracker</h3>
+  <p style="font-size: 13px; color: #666; margin-bottom: 12px;">
+    Enter your skills (comma separated) for resume matching:
+  </p>
+  <textarea id="skills" placeholder="e.g., JavaScript, React, Python, AWS, SQL"></textarea>
+  <button id="save">Save Skills</button>
+  <div class="status" id="status"></div>
+
+  <script>
+    // Load saved skills
+    chrome.storage.local.get(['userSkills'], (result) => {
+      if (result.userSkills) {
+        document.getElementById('skills').value = result.userSkills.join(', ');
+      }
+    });
+
+    // Save skills
+    document.getElementById('save').addEventListener('click', () => {
+      const skills = document.getElementById('skills').value
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      
+      chrome.storage.local.set({ userSkills: skills }, () => {
+        document.getElementById('status').textContent = `✅ Saved ${skills.length} skills!`;
+      });
+    });
+  </script>
+</body>
+</html>
